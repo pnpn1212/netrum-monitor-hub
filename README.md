@@ -45,12 +45,12 @@ netrum-monitor-hub/
 
 ## ⚙️ Setup
 ✅ Telegram Bot Token
-- Create via @BotFather
+- Create via [@BotFather](https://t.me/BotFather)
 - Save the token (e.g., 123456789:ABCDEF...)
 
 ✅ Telegram Chat ID
 - Send a message to your bot
-- Use @userinfobot or
+- Use [@userinfobot](https://t.me/userinfobot) or
 ```
 https://api.telegram.org/bot<your_token>/getUpdates
 ```
