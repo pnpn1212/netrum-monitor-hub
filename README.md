@@ -64,7 +64,7 @@ cd $HOME && bash <(curl -s https://raw.githubusercontent.com/vnbnode/binaries/ma
 
 ### 2. Clone this repository
 ```
-git clone
+git clone https://github.com/pnpn1212/netrum-monitor-hub.git
 cd netrum-monitor-hub
 ```
 
