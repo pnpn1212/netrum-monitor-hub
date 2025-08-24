@@ -45,12 +45,13 @@ netrum-monitor-hub/
 
 ## ⚙️ Cài đặt
 ✅ Telegram Bot Token
-- Tạo thông qua @BotFather
+- Tạo thông qua [@BotFather](https://t.me/BotFather)
 - Lưu token (ví dụ: 123456789:ABCDEF...)
 
 ✅ Telegram Chat ID
 - Gửi một tin nhắn tới bot của bạn
-- Sử dụng @userinfobot hoặc
+- Sử dụng [@userinfobot](https://t.me/userinfobot) hoặc
+
 ```
 https://api.telegram.org/bot<your_token>/getUpdates
 ```
