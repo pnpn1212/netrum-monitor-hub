@@ -1,0 +1,18 @@
+services:
+  netrum_monitor:
+    build: .
+    image: netrum_monitor:latest
+    container_name: netrum_monitor
+    pid: "host"              
+    volumes:
+      - ./netrum_main.py:/app/netrum_main.py 
+      - ./py_module:/app/py_module               
+      - /root/netrum-lite-node:/root/netrum-lite-node
+      - ./.netrum:/app/.netrum              
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro    
+    working_dir: /app
+    restart: unless-stopped
+    environment:
+      PYTHONUNBUFFERED: "1"

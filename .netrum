@@ -1,0 +1,9 @@
+# Telegram Bot Configuration
+TELEGRAM_BOT_TOKEN=
+TELEGRAM_CHAT_ID=
+
+# Wallet Netrum
+WALLET_ADDRESS=
+
+# DISCORD_WEBHOOK (optional)
+DISCORD_WEBHOOK=
