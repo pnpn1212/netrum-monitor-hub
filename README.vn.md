@@ -92,7 +92,7 @@ docker compose up --build -d
 
 ### Khi bot đã online, sử dụng các lệnh slash trong Telegram:
 
-`/start` → Menu khởi động Bot
+`/start` → Khởi động Menu Bot
 
 `/wallet` → Xem số dư và địa chỉ ví
 
