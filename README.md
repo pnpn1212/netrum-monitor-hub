@@ -3,7 +3,7 @@
 [![Việt Nam](https://raw.githubusercontent.com/gosquared/flags/master/flags/flags/shiny/24/Vietnam.png)](README.vn.md)   
 
 ------
-# Netrum Hub
+# Netrum Monitor Hub
 
 A tool to manage and monitor your Netrum Lite Node directly via Telegram and Discord Webhooks.
 
