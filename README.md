@@ -50,7 +50,7 @@ netrum-monitor-hub/
 
 ✅ Telegram Chat ID
 - Send a message to your bot
-- Use [@userinfobot](https://t.me/userinfobot) or
+- Use [@userinfobot](https://t.me/RawDataBot) or
 ```
 https://api.telegram.org/bot<your_token>/getUpdates
 ```
