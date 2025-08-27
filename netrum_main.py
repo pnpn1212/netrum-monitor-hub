@@ -1,4 +1,5 @@
 import threading
+from threading import Thread, Event
 from py_module.daily import send_daily_report
 from py_module.monitor import monitor_log
 from py_module.bot import run_telegram_bot 
@@ -10,8 +11,9 @@ def main():
         print("❌ Telegram bot failed to start. Exiting.")
         return 
 
-    threading.Thread(target=monitor_log, daemon=True).start()
-    threading.Thread(target=run_discord_bot, daemon=True).start()
+    run_discord_bot() 
+
+    Thread(target=monitor_log, daemon=True).start()
 
     app.run_polling()
 

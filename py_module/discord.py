@@ -5,4 +5,4 @@ def run_discord_bot():
     if not webhook:
         print("⚠️  Discord webhook not set, skipping")
         return
-    print("🤖 Discord notifications: ✅ ON.")
+    print("💠 Discord:  ✅ ON.")

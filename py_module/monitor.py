@@ -4,6 +4,8 @@ import time
 import re
 import logging
 from datetime import datetime
+from py_module.language import translations, get_lang
+from wcwidth import wcswidth
 from py_module.config import LIVE_LOG_JS, NETRUM_NODE_DIR, cfg, DAILY_STATS, tz
 from py_module.notification import send_all
 from py_module.utils import countdown, get_timeout_from_file
@@ -13,7 +15,6 @@ def monitor_log():
     retry_count = 0
 
     while True:
-        logging.warning(f'Retry #{retry_count} - Starting netrum-mining-log...')
         proc = subprocess.Popen(
             ['node', str(LIVE_LOG_JS)],
             stdout=subprocess.PIPE,
@@ -47,16 +48,30 @@ def monitor_log():
                     mined_val = 0.0
                 DAILY_STATS['mined'] = mined_val
 
+                lang = get_lang() 
+                t_dict = translations.get(lang, translations["en"])
+
+                labels = [
+                    t_dict['remain'],
+                    t_dict['load'],
+                    t_dict['mined'],
+                    t_dict['speed'],
+                    t_dict['status_monitor']
+                ]
+
+                max_label_len = max(wcswidth(label) for label in labels)
+
                 msg = (
-                    "<b>📊 Mining Update</b>\n"
+                    f"<b>📊 {t_dict['mining_update']}</b>\n"
                     "<pre>"
-                    f"⏰ Remain: {parsed['time']}\n"
-                    f"🏁 Load:   {parsed['progress']}\n"
-                    f"💎 Mined:  {mined_val}\n"
-                    f"⏩ Speed:  {parsed['speed']}\n"
-                    f"🌐 Status: {parsed['status']}\n"
+                    f"⏰ {t_dict['remain']:<{max_label_len}} | {parsed['time']}\n"
+                    f"🏁 {t_dict['load']:<{max_label_len}} | {parsed['progress']}\n"
+                    f"💎 {t_dict['mined']:<{max_label_len}} | {mined_val}\n"
+                    f"⏩ {t_dict['speed']:<{max_label_len}} | {parsed['speed']}\n"
+                    f"🌐 {t_dict['status_monitor']:<{max_label_len}} | {parsed['status']}\n"
                     "</pre>"
                 )
+        
                 send_all(msg, cfg, platform='both')
 
                 proc.kill()
@@ -69,9 +84,8 @@ def monitor_log():
         if mined_found:
             retry_count = 0
             countdown()
-            continue
         else:
             retry_count += 1
             now = datetime.now(tz).strftime("%H:%M:%S - %d/%m/%Y")
-            print(f"[{now}] 🕒 Wait 00:30 try again netrum-mining-log...", flush=True)
+            logging.warning(f"[{now}] 🔁 Retry #{retry_count} in 00:30 → netrum-mining-log")
             time.sleep(30)

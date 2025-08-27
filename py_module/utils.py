@@ -2,7 +2,7 @@
 import os
 import time
 from datetime import datetime
-from py_module.config import tz, cfg
+from py_module.config import tz, CONFIG_PATH, cfg
 
 NETRUM_FILE = ".netrum"
 DEFAULT_TIMEOUT = 5
@@ -40,7 +40,7 @@ def set_timeout(minutes: int):
     lines.append(f"TIMEOUT_MIN={minutes}")
     with open(NETRUM_FILE, "w") as f:
         for line in lines:
-            f.write(f"{line}\n") 
+            f.write(f"{line}\n")
     cfg['TIMEOUT_MIN'] = str(minutes)
     return minutes
 
@@ -50,18 +50,21 @@ def get_timeout_min():
     except ValueError:
         return get_timeout_from_file()
 
-def countdown(elapsed=0):
+def countdown():
     while True:
-        timeout = get_timeout_min() * 60  # lấy mới mỗi vòng
-        if elapsed >= timeout:
-            break
-
+        timeout = get_timeout_min() * 60
         now_str = datetime.now(tz).strftime("%H:%M:%S - %d/%m/%Y")
-        remain = timeout - elapsed
-        hh = remain // 3600
-        mm = (remain % 3600) // 60
-        ss = remain % 60
+        hh = timeout // 3600
+        mm = (timeout % 3600) // 60
+        ss = timeout % 60
         hms = f"{hh:02}:{mm:02}:{ss:02}"
-        print(f"[{now_str}] 🕒 Wait time_out {hms} run netrum-mining-log...", flush=True)
-        time.sleep(1)
-        elapsed += 1
+        print(f"[{now_str}] 🕒 Next run in {hms} → netrum-mining-log.", flush=True)
+
+        start = time.time()
+        while time.time() - start < timeout:
+            if get_timeout_min() * 60 != timeout:
+                print(f"[{datetime.now(tz).strftime('%H:%M:%S - %d/%m/%Y')}] 🔄 Change Timeout → Restart countdown...", flush=True)
+                break
+            time.sleep(1)
+        else:
+            break

@@ -3,6 +3,7 @@ import subprocess
 import html
 from py_module.notification import send_all
 from py_module.config import cfg
+from py_module.language import translations, get_lang
 
 CONTAINER_NAME = "netrum_monitor"
 BUFFER_LINES = 10 
@@ -17,18 +18,32 @@ def run_logs():
             text=True
         )
 
+        lang = get_lang()
+        t_dict = translations.get(lang, translations["en"])
+
+        all_output = result.stdout
         if result.stderr.strip():
-            print(result.stderr.strip())
+            all_output += "\n" + result.stderr
 
-        lines = [html.escape(line) for line in result.stdout.splitlines() if line.strip()]
+        lines = [html.escape(line) for line in all_output.splitlines() if line.strip()]
 
-        if lines:
-            msg_content = "\n".join(lines)
-            msg = f"<b>📜 Logs</b>\n<pre>{msg_content}</pre>"
+        lines = lines[-BUFFER_LINES:]
+
+        msg_content = "\n".join(lines)
+
+        if msg_content:
+            msg = f"<b>📜 {t_dict['logs_logs']}</b>\n<pre>{msg_content}</pre>"
             send_all(msg, cfg, platform=LOG_PLATFORM)
         else:
-            send_all("<b>📜 Logs</b>\n<pre>⚠️ No logs found</pre>", cfg, platform=LOG_PLATFORM)
+            msg = f"<b>📜 {t_dict['logs_logs']}</b>\n<pre>⚠️ {t_dict['no_logs']}</pre>"
+            send_all(msg, cfg, platform=LOG_PLATFORM)
 
     except Exception as e:
-        err_msg = f"<b>❌ Exception in Logs</b>\n<pre>{html.escape(str(e))}</pre>"
+        err_msg = f"<b>❌ {t_dict['logs_exception']}</b>\n<pre>{html.escape(str(e))}</pre>"
         send_all(err_msg, cfg, platform=LOG_PLATFORM)
+
+
+
+
+
+

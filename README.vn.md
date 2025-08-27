@@ -50,7 +50,7 @@ netrum-monitor-hub/
 
 ✅ Telegram Chat ID
 - Gửi một tin nhắn tới bot của bạn
-- Sử dụng [@userinfobot](https://t.me/RawDataBot) hoặc
+- Sử dụng [@RawDataBot](https://t.me/RawDataBot) hoặc
 
 ```
 https://api.telegram.org/bot<your_token>/getUpdates

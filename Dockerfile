@@ -6,7 +6,7 @@ RUN apt-get update && \
     apt-get update && \
     apt-get install -y nodejs && \
     node -v && npm -v
-RUN pip install --no-cache-dir requests python-dotenv pytz tzlocal python-telegram-bot discord.py
+RUN pip install --no-cache-dir requests python-dotenv pytz tzlocal python-telegram-bot discord.py wcwidth
 RUN apt-get update && \
     apt-get install -y docker.io && \
     curl -L "https://github.com/docker/compose/releases/download/v2.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
