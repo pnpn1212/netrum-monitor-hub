@@ -25,18 +25,7 @@ Công cụ quản lý và giám sát Netrum Lite Node trực tiếp thông qua T
 ```
 netrum-monitor-hub/
 ├─ py_module
-    ├─ balances
-    ├─ bot
-    ├─ claim
-    ├─ config
-    ├─ daily
-    ├─ discord
-    ├─ log
-    ├─ monitor
-    ├─ notification
-    ├─ parse_log
-    ├─ status
-    ├─ utils
+    ├─ 
 ├─ .netrum
 ├─ docker-compose.yml
 ├─ Dockerfile

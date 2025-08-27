@@ -25,18 +25,7 @@ A tool to manage and monitor your Netrum Lite Node directly via Telegram and Dis
 ```
 netrum-monitor-hub/
 ├─ py_module
-    ├─ balances
-    ├─ bot
-    ├─ claim
-    ├─ config
-    ├─ daily
-    ├─ discord
-    ├─ log
-    ├─ monitor
-    ├─ notification
-    ├─ parse_log
-    ├─ status
-    ├─ utils
+    ├─ 
 ├─ .netrum
 ├─ docker-compose.yml
 ├─ Dockerfile
