@@ -13,6 +13,7 @@ Công cụ quản lý và giám sát Netrum Lite Node trực tiếp thông qua T
 - Đặt thời gian cho mỗi lần gửi báo cáo trạng thái mining
 - Claim phần thưởng đào coin
 - Xem log của bot
+- Thay đổi ngôn ngữ EN/VN
 
 ## 📦 Yêu cầu
 - Docker Compose
@@ -85,13 +86,13 @@ docker compose up --build -d
 
 `/wallet` → Xem số dư và địa chỉ ví
 
-`/status` → Kiểm tra node đang chạy hay không
-
 `/logs` → Xem log của bot
 
 `/claim` → Claim phần thưởng, click ✅ Yes hoặc ❌ Cancel
 
 `/set_timeout` → Đặt thời gian cho mỗi lần gửi báo cáo trạng thái mining
+
+`/lang` → Thay đổi ngôn ngữ EN/VN
 
 ---
 ## 📑 Ví dụ Output
