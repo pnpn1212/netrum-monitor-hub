@@ -78,6 +78,13 @@ DISCORD_WEBHOOK=
 ```
 docker compose up --build -d
 ```
+
+## ⬆️ Cập nhật
+```
+cd $HOME/netrum-monitor-hub
+git pull
+```
+
 ---
 
 ### Khi bot đã online, sử dụng các lệnh slash trong Telegram:
