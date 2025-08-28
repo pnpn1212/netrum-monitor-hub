@@ -3,6 +3,7 @@ services:
     build: .
     image: netrum_monitor:latest
     container_name: netrum_monitor
+    network_mode: "host"
     pid: "host"              
     volumes:
       - ./netrum_main.py:/app/netrum_main.py 

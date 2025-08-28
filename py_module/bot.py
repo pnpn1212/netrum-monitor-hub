@@ -2,6 +2,7 @@
 import os
 import asyncio
 import requests
+import httpx
 from .config import cfg
 from .log import run_logs
 from .claim import run_auto_claim
@@ -420,8 +421,9 @@ async def menu_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif data == "lang":
         await set_lang(update, context)
 
-def create_telegram_app(TELEGRAM_TOKEN: str, TELEGRAM_CHAT_ID: int) -> ApplicationBuilder:
+def create_telegram_app(TELEGRAM_TOKEN: str, TELEGRAM_CHAT_ID: int):
     app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
+    app.bot._request_kwargs = {"timeout": 60} 
 
     def private_chat_only(handler):
         async def wrapper(update, context):
@@ -492,11 +494,15 @@ async def update_bot_commands(bot, retries=3, delay=5):
 
     for attempt in range(1, retries + 1):
         try:
+            if not hasattr(bot, "_request_kwargs") or "timeout" not in bot._request_kwargs:
+                bot._request_kwargs = {"timeout": 60} 
+
             await bot.set_my_commands([BotCommand(cmd, desc) for cmd, desc in commands_list])
             return commands_list
+
         except httpx.ConnectTimeout:
             if attempt < retries:
-                print(f"[WARN] ConnectTimeout, retrying {attempt}/{retries} in {delay}s...")
+                print(f"[WARN] ConnectTimeout, retry {attempt}/{retries} in {delay}s...")
                 await asyncio.sleep(delay)
             else:
                 print("[ERROR] Failed to update bot commands after retries.")
