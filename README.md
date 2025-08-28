@@ -54,8 +54,8 @@ cd $HOME && bash <(curl -s https://raw.githubusercontent.com/vnbnode/binaries/ma
 
 ### 2. Clone this repository
 ```
-git clone https://github.com/pnpn1212/netrum-monitor-hub.git
-cd netrum-monitor-hub
+cd $HOME && git clone https://github.com/pnpn1212/netrum-monitor-hub.git
+cd $HOME/netrum-monitor-hub
 ```
 
 ### 3. Configure `.netrum`
@@ -94,6 +94,12 @@ docker compose up --build -d
 `/set_timeout` → Set a delay before executing an action
 
 `/lang` → Change language EN/VN
+
+## ⬆️ Upgrade
+```
+cd $HOME/netrum-monitor-hub
+git pull
+```
 
 ---
 ## 📑 Example Output
