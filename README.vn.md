@@ -42,26 +42,28 @@ netrum-monitor-hub/
 - Gửi một tin nhắn tới bot của bạn
 - Sử dụng [@RawDataBot](https://t.me/RawDataBot) hoặc
 
-```
+```bash
 https://api.telegram.org/bot<your_token>/getUpdates
 ```
 
 > ⚠️ Không hỗ trợ trên PowerShell/CMD. Vui lòng sử dụng WSL hoặc VPS Linux.
 
 ### 1. Cài thư viện cần thiết
-```
+```bash
 cd $HOME && bash <(curl -s https://raw.githubusercontent.com/vnbnode/binaries/main/docker-install.sh)
 ```
 
 ### 2. Clone repository này
-```
+```bash
 git clone https://github.com/pnpn1212/netrum-monitor-hub.git
 cd netrum-monitor-hub
 ```
 
 ### 3. Cấu hình `.netrum`
 Chỉnh sửa file `.netrum` trong thư mục bot::
-
+```
+nano .netrum
+```   
 ```
 # Cấu hình Telegram Bot
 TELEGRAM_BOT_TOKEN=
