@@ -60,7 +60,7 @@ cd netrum-monitor-hub
 
 ### 3. Configure `.netrum`
 Edit a `.netrum` file in your bot directory:
-```bash
+```
 nano .netrum
 ```
 
@@ -77,7 +77,7 @@ DISCORD_WEBHOOK=
 ```  
 
 ### 4. Run the bot:
-```bash
+```
 docker compose up --build -d
 ```
 ---
