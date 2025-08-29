@@ -80,6 +80,13 @@ DISCORD_WEBHOOK=
 ```
 docker compose up --build -d
 ```
+
+## ⬆️ Upgrade
+```
+cd $HOME/netrum-monitor-hub
+git pull
+```
+
 ---
 
 ### Once the bot is online, use slash commands in Telegram:
@@ -97,12 +104,6 @@ docker compose up --build -d
 `/set_timeout` → Set a delay before executing an action
 
 `/lang` → Change language EN/VN
-
-## ⬆️ Upgrade
-```
-cd $HOME/netrum-monitor-hub
-git pull
-```
 
 ---
 ## 📑 Example Output
