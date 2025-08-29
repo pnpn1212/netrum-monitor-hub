@@ -41,25 +41,28 @@ netrum-monitor-hub/
 ✅ Telegram Chat ID
 - Send a message to your bot
 - Use [@RawDataBot](https://t.me/RawDataBot) or
-```
+```bash
 https://api.telegram.org/bot<your_token>/getUpdates
 ```
 
 > ⚠️ Not supported on PowerShell/CMD. Use WSL or a Linux VPS.
 
 ### 1. Install required libraries
-```
+```bash
 cd $HOME && bash <(curl -s https://raw.githubusercontent.com/vnbnode/binaries/main/docker-install.sh)
 ```
 
 ### 2. Clone this repository
-```
+```bash
 git clone https://github.com/pnpn1212/netrum-monitor-hub.git
 cd netrum-monitor-hub
 ```
 
 ### 3. Configure `.netrum`
 Edit a `.netrum` file in your bot directory:
+```bash
+nano .netrum
+```
 
 ```
 # Telegram Bot Configuration
@@ -74,7 +77,7 @@ DISCORD_WEBHOOK=
 ```  
 
 ### 4. Run the bot:
-```
+```bash
 docker compose up --build -d
 ```
 ---
