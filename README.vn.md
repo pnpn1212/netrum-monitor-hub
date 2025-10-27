@@ -85,6 +85,7 @@ docker compose up --build -d
 ```
 cd $HOME/netrum-monitor-hub
 git pull
+docker compose restart
 ```
 
 ---
