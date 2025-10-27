@@ -5,7 +5,7 @@ NETRUM_FILE = ".netrum"
 
 translations = {
     "en": {
-        "welcome": "Welcome! Please choose an action:",
+        "welcome": "Welcome!",
         "wallet": "Check Wallet",
         "wallet_desc": "Check Wallet",
         "logs": "Logs Bot",
@@ -41,6 +41,7 @@ translations = {
         "load": "Load",
         "mined": "Mined",
         "speed": "Speed",
+        "tasks": "Tasks",
         "status_monitor": "Status",
         # --- Daly ---
         "wallet_info": "Wallet Check",
@@ -62,7 +63,7 @@ translations = {
         "logs_exception": "Exception in Logs",
     },
     "vi": {
-        "welcome": "Chào mừng! Vui lòng chọn:",
+        "welcome": "Xin chào!",
         "wallet": "Kiểm tra Ví",
         "wallet_desc": "Kiểm tra Ví",
         "logs": "Nhật ký Bot",
@@ -98,6 +99,7 @@ translations = {
         "load": "Tiến độ",
         "mined": "Đào được",
         "speed": "Tốc độ",
+        "tasks": "Nhiệm vụ",
         "status_monitor": "Trạng thái",
         # --- Daly ---
         "wallet_info": "Kiểm tra Ví",

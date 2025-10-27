@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 from py_module.daily import send_daily_report
 from py_module.language import translations, get_lang, set_lang_file
 from py_module.utils import set_timeout, get_timeout_min, get_timeout_from_file
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, BotCommand
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, BotCommand, MenuButtonWebApp, WebAppInfo, BotCommandScopeDefault, BotCommandScopeChat
 from telegram.ext import (
     ApplicationBuilder, CommandHandler, CallbackQueryHandler,
     ConversationHandler, MessageHandler, filters, ContextTypes
@@ -25,7 +25,6 @@ def fmt_dt(dt: datetime) -> str:
     return dt.strftime("%H:%M:%S - %d/%m/%Y")
 
 async def notify(message: str, context=None, chat_id=None, pre: bool = True):
-    # Telegram
     if context and chat_id:
         from telegram.constants import ParseMode
         if pre:
@@ -40,7 +39,6 @@ async def notify(message: str, context=None, chat_id=None, pre: bool = True):
             parse_mode=parse_mode
         )
 
-    # Discord webhook
     webhook = cfg.get("DISCORD_WEBHOOK")
     if webhook:
         try:
@@ -52,7 +50,6 @@ async def notify(message: str, context=None, chat_id=None, pre: bool = True):
         except Exception as e:
             print(f"[❌] Discord webhook failed: {e}")
 
-# ---------------- Command Start ----------------
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     lang = get_lang()
     t = translations.get(lang, translations["en"])
@@ -62,7 +59,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup=main_menu_keyboard()
     )
 
-# ---------------- Command /set_lang ----------------
 async def set_lang(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     lang = get_lang()
@@ -105,12 +101,16 @@ async def set_lang(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     pass
 
                 set_lang_file(choice)
+
                 await update_bot_commands(context.bot)
+
                 t_new = translations.get(choice, translations["en"])
 
                 await query.answer(f"✅ {t_new['updated']}")
+
                 await query.message.chat.send_message(
-                    f"✅ {t_new['updated']}",
+                    f"<pre>✅ {t_new['updated']}</pre>",
+                    parse_mode="HTML",
                     reply_markup=main_menu_keyboard()
                 )
 
@@ -157,7 +157,6 @@ async def set_lang(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=keyboard
         )
 
-# ---------------- Wallet Command ----------------
 async def wallet_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = None
 
@@ -179,7 +178,6 @@ async def wallet_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode="HTML"
         )
 
-# --- Timeout ---
 async def set_timeout_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
     lang = get_lang()
@@ -303,7 +301,6 @@ async def set_timeout_cancel(update: Update, context: ContextTypes.DEFAULT_TYPE)
     await context.bot.send_message(chat_id=chat_id, text=f"❌ {t.get('timeout_change_cancelled')}")
     return ConversationHandler.END
 
-# --- Claim ---
 async def claim_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     lang = get_lang()
     t = translations.get(lang, translations["en"])
@@ -318,9 +315,10 @@ async def claim_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message_text = t["claim_question"]
 
     if update.callback_query:
+        query = update.callback_query
         try:
-            await update.callback_query.message.delete()
-            await update.callback_query.answer()  
+            await query.message.delete() 
+            await query.answer()
         except:
             pass
 
@@ -329,7 +327,7 @@ async def claim_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             message_text,
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
-    else: 
+    else:
         chat_id = update.effective_chat.id
         await context.bot.send_message(
             chat_id=chat_id,
@@ -343,8 +341,9 @@ async def claim_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
     chat_id = query.message.chat.id
+
     try:
-        await query.edit_message_reply_markup(reply_markup=None)
+        await query.message.delete() 
     except:
         pass
 
@@ -355,10 +354,9 @@ async def claim_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif query.data == "claim_cancel":
         await context.bot.send_message(
             chat_id=chat_id, 
-            text = f"❌ {t['claim_cancelled']}"
+            text=f"❌ {t['claim_cancelled']}"
         )
 
-# --- Command handler /logs ---
 async def logs_command(update, context):
     if update.callback_query:
         query = update.callback_query
@@ -374,7 +372,6 @@ async def logs_command(update, context):
     loop = asyncio.get_running_loop()
     await loop.run_in_executor(None, run_logs)
 
-# ---------------- Config Helpers ----------------
 def cancel_keyboard():
     lang = get_lang()
     t = translations.get(lang, translations["en"])
@@ -382,44 +379,91 @@ def cancel_keyboard():
         [InlineKeyboardButton(f"❌ {t.get('cancel')}", callback_data="cancel_timeout")]
     ])
 
-def auto_claim_cancel_keyboard():
+def main_menu_keyboard():
     lang = get_lang()
     t = translations.get(lang, translations["en"])
-    return InlineKeyboardMarkup([
-        [InlineKeyboardButton(f"❌ {t.get('cancel')}", callback_data="cancel_auto_claim")]
-    ])
+    keyboard = [
+        [f"💳 {t['wallet']}", f"📜 {t['logs']}", f"⏰ {t['timeout']}"], 
+        [f"💎 {t['claim']}", f"🌐 {t['lang']}"],
+    ]
+    return ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
 
-# ---------------- Keyboards ----------------
-def main_menu_keyboard():
-    lang = get_lang() 
-    t = translations.get(lang, translations["en"])
-
-    return InlineKeyboardMarkup([
-        [InlineKeyboardButton(f"💳 {t['wallet']}", callback_data="wallet_command")],
-        [InlineKeyboardButton(f"📜 {t['logs']}", callback_data="logs")],
-        [InlineKeyboardButton(f"⏰ {t['timeout']}", callback_data="set_timeout")],
-        [InlineKeyboardButton(f"💎 {t['claim']}", callback_data="claim")],
-        [InlineKeyboardButton(f"🌐 {t['lang']}", callback_data="lang")],
-    ])
-
-# --- Menu callback ---
 async def menu_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
-    if not query:
-        return
-    await query.answer()
-    data = query.data
+    TEXT_ACTION_MAP = {
+        "💳": "wallet_command",
+        "📜": "logs",
+        "⏰": "set_timeout",
+        "💎": "claim",
+        "🌐": "lang"
+    }
 
-    if query.data == "set_timeout":
+    data = None
+
+    if query:
+        if query.message.chat.type != "private":
+            await query.answer()
+            await context.bot.send_message(
+                chat_id=query.message.chat.id,
+                text="❌ Commands can only be used in private chat."
+            )
+            return
+        await query.answer()
+        data = query.data
+        try:
+            await query.message.delete()
+        except:
+            pass
+
+    elif update.message:
+        if update.message.chat.type != "private":
+            await update.message.reply_text("❌ Commands can only be used in private chat.")
+            return
+        data = update.message.text
+
+        for key in TEXT_ACTION_MAP:
+            if data.startswith(key):
+                try:
+                    await update.message.delete()
+                except:
+                    pass
+                break
+
+    action = None
+    for key, act in TEXT_ACTION_MAP.items():
+        if data.startswith(key):
+            action = act
+            break
+
+    if not action:
+        return 
+
+    if action == "set_timeout":
         await set_timeout_command(update, context)
-    elif data == "logs":
+    elif action == "logs":
         await logs_command(update, context)
-    elif data == "claim":
+    elif action == "claim":
         await claim_command(update, context)
-    elif data == "wallet_command":
+    elif action == "wallet_command":
         await wallet_command(update, context)
-    elif data == "lang":
+    elif action == "lang":
         await set_lang(update, context)
+
+def delete_message_before(handler):
+    async def wrapper(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        if update.message:
+            try:
+                await update.message.delete()
+            except:
+                pass
+
+        elif update.callback_query:
+            try:
+                await update.callback_query.message.delete()
+            except:
+                pass
+        return await handler(update, context)
+    return wrapper
 
 def create_telegram_app(TELEGRAM_TOKEN: str, TELEGRAM_CHAT_ID: int):
     app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
@@ -432,15 +476,15 @@ def create_telegram_app(TELEGRAM_TOKEN: str, TELEGRAM_CHAT_ID: int):
             return await handler(update, context)
         return wrapper
 
-    # --- ConversationHandler set_timeout ---
     conv_timeout = ConversationHandler(
         entry_points=[
-            CommandHandler("set_timeout", private_chat_only(set_timeout_command)),
-            CallbackQueryHandler(private_chat_only(set_timeout_command), pattern="^set_timeout$")
+            CallbackQueryHandler(menu_callback, pattern="^set_timeout$"),
+            CommandHandler("set_timeout", set_timeout_command),
+            MessageHandler(filters.TEXT & filters.Regex(r'^⏰'), set_timeout_command)
         ],
         states={
             SET_TIMEOUT: [
-                MessageHandler(filters.TEXT & ~filters.COMMAND, set_timeout_receive),
+                MessageHandler(filters.TEXT & ~filters.COMMAND & filters.ChatType.PRIVATE, delete_message_before(set_timeout_receive)),
                 CallbackQueryHandler(set_timeout_cancel, pattern="^cancel_timeout$")
             ]
         },
@@ -453,7 +497,6 @@ def create_telegram_app(TELEGRAM_TOKEN: str, TELEGRAM_CHAT_ID: int):
         pattern="^cancel_timeout$"
     )
 
-    # --- Handlers ---
     app.add_handler(CommandHandler("start", private_chat_only(start)))
     app.add_handler(CommandHandler("wallet", private_chat_only(wallet_command)))
     app.add_handler(CommandHandler("logs", private_chat_only(logs_command)))
@@ -461,8 +504,8 @@ def create_telegram_app(TELEGRAM_TOKEN: str, TELEGRAM_CHAT_ID: int):
     app.add_handler(conv_timeout)
     app.add_handler(cancel_handler)
     app.add_handler(CommandHandler("claim", private_chat_only(claim_command)))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND & filters.ChatType.PRIVATE, menu_callback))
 
-    # menu_callback lang/claim
     app.add_handler(
         CallbackQueryHandler(
             private_chat_only(menu_callback),
@@ -470,16 +513,15 @@ def create_telegram_app(TELEGRAM_TOKEN: str, TELEGRAM_CHAT_ID: int):
         )
     )
 
-    # callback claim button
     app.add_handler(CallbackQueryHandler(private_chat_only(claim_button), pattern="^claim_"))
-
-    # callback language
     app.add_handler(CallbackQueryHandler(private_chat_only(set_lang), pattern="^lang$"))   
     app.add_handler(CallbackQueryHandler(private_chat_only(set_lang), pattern="^lang_")) 
 
     return app, private_chat_only
 
-async def update_bot_commands(bot, retries=3, delay=5):
+WEBAPP_URL = "https://netrum.mowvnb.space"
+
+async def update_bot_commands(bot):
     lang = get_lang()
     t = translations.get(lang, translations["en"])
 
@@ -492,21 +534,15 @@ async def update_bot_commands(bot, retries=3, delay=5):
         ("lang", t.get("lang_desc", "Set Language")),
     ]
 
-    for attempt in range(1, retries + 1):
-        try:
-            if not hasattr(bot, "_request_kwargs") or "timeout" not in bot._request_kwargs:
-                bot._request_kwargs = {"timeout": 60} 
+    await bot.set_my_commands([BotCommand(cmd, desc) for cmd, desc in commands_list])
 
-            await bot.set_my_commands([BotCommand(cmd, desc) for cmd, desc in commands_list])
-            return commands_list
+    await bot.set_chat_menu_button(
+        menu_button=MenuButtonWebApp(
+            text="🌐 Open",
+            web_app=WebAppInfo(url=WEBAPP_URL)
+        )
+    )
 
-        except httpx.ConnectTimeout:
-            if attempt < retries:
-                print(f"[WARN] ConnectTimeout, retry {attempt}/{retries} in {delay}s...")
-                await asyncio.sleep(delay)
-            else:
-                print("[ERROR] Failed to update bot commands after retries.")
-                return []
 
 def run_telegram_bot() -> tuple[bool, ApplicationBuilder | None]:
     TELEGRAM_TOKEN = cfg.get("TELEGRAM_BOT_TOKEN")

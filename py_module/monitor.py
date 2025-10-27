@@ -56,6 +56,7 @@ def monitor_log():
                     t_dict['load'],
                     t_dict['mined'],
                     t_dict['speed'],
+                    t_dict['tasks'],
                     t_dict['status_monitor']
                 ]
 
@@ -68,6 +69,7 @@ def monitor_log():
                     f"🏁 {t_dict['load']:<{max_label_len}} | {parsed['progress']}\n"
                     f"💎 {t_dict['mined']:<{max_label_len}} | {mined_val}\n"
                     f"⏩ {t_dict['speed']:<{max_label_len}} | {parsed['speed']}\n"
+                    f"📦 {t_dict['tasks']:<{max_label_len}} | {parsed['tasks']}\n"
                     f"🌐 {t_dict['status_monitor']:<{max_label_len}} | {parsed['status']}\n"
                     "</pre>"
                 )
