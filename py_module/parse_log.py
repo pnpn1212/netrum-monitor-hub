@@ -32,7 +32,7 @@ def parse_log_line(line, claim_after_days=0):
         elif p.lower().startswith("mined:"):
             try:
                 val = p.split(":", 1)[1].strip().split()[0]
-                result["mined"] = f"{float(val):.6f}"
+                result["mined"] = f"{float(val):.4f}"
             except:
                 pass
         elif p.lower().startswith("speed:"):
