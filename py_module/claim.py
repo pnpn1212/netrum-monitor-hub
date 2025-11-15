@@ -92,9 +92,9 @@ def run_auto_claim():
 
                 values = [
                     addr,
-                    f"{claimable:.6f}",
-                    f"{fee:.6f} = ${fee*eth_price:.2f}",
-                    f"{balance:.6f} = ${balance*eth_price:.2f}",
+                    f"{claimable:.4f}",
+                    f"{fee:.4f} = ${fee*eth_price:.2f}",
+                    f"{balance:.4f} = ${balance*eth_price:.2f}",
                     "✅ Success",
                     tx_link
                 ]
